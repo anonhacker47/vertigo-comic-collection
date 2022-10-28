@@ -127,7 +127,7 @@ to a date and time specification in ISO 8601 format, such as
 `2020-01-01T00:00:00Z`. For users, the `after` argument must be set to a
 string. Examples:
 
-    http://localhost:5000/api/posts?limit=10&after=2021-01-01T00:00:00
+    http://localhost:5000/api/series?limit=10&after=2021-01-01T00:00:00
     http://localhost:5000/api/users/me/followers?limit=10&after=diana
 
 The response body in a paginated request contains a `data` attribute that is

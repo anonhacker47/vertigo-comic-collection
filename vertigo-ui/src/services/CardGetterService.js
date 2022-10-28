@@ -6,11 +6,11 @@ export default {
     ;
   },
   addpost(data,headers) {
-    return Api().post("posts",data,headers
+    return Api().post("series",data,headers
       );
   },
   removepost(data,headers) {
-    return Api().delete(`posts/${data}`,headers
+    return Api().delete(`series/${data}`,headers
       );
   },
 };

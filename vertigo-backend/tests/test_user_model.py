@@ -57,7 +57,7 @@ class UserModelTests(BaseTestCase):
                 sqla.func.count()).select_from(u2.followers_select())) == 0
 
     def test_get_users(self):
-        rv = self.client.post('/api/users', json={
+        rv = self.client.series('/api/users', json={
             'username': 'john',
             'email': 'john@example.com',
             'password': 'cat',
@@ -70,7 +70,7 @@ class UserModelTests(BaseTestCase):
         assert rv.json['data'][1]['email'] == 'john@example.com'
         assert 'password' not in rv.json['data'][1]
 
-    def test_follow_posts(self):
+    def test_follow_series(self):
         # create four users
         u1 = User(username='john', email='john@example.com')
         u2 = User(username='susan', email='susan@example.com')
@@ -78,15 +78,15 @@ class UserModelTests(BaseTestCase):
         u4 = User(username='david', email='david@example.com')
         db.session.add_all([u1, u2, u3, u4])
 
-        # create four posts
+        # create four series
         now = datetime.utcnow()
-        p1 = Post(text="post from john", author=u1,
+        p1 = Post(text="series from john", author=u1,
                   timestamp=now + timedelta(seconds=1))
-        p2 = Post(text="post from susan", author=u2,
+        p2 = Post(text="series from susan", author=u2,
                   timestamp=now + timedelta(seconds=4))
-        p3 = Post(text="post from mary", author=u3,
+        p3 = Post(text="series from mary", author=u3,
                   timestamp=now + timedelta(seconds=3))
-        p4 = Post(text="post from david", author=u4,
+        p4 = Post(text="series from david", author=u4,
                   timestamp=now + timedelta(seconds=2))
         db.session.add_all([p1, p2, p3, p4])
         db.session.commit()
@@ -98,14 +98,14 @@ class UserModelTests(BaseTestCase):
         u3.follow(u4)  # mary follows david
         db.session.commit()
 
-        # check the followed posts of each user
-        f1 = db.session.scalars(u1.followed_posts_select().order_by(
+        # check the followed series of each user
+        f1 = db.session.scalars(u1.followed_series_select().order_by(
             Post.timestamp.desc())).all()
-        f2 = db.session.scalars(u2.followed_posts_select().order_by(
+        f2 = db.session.scalars(u2.followed_series_select().order_by(
             Post.timestamp.desc())).all()
-        f3 = db.session.scalars(u3.followed_posts_select().order_by(
+        f3 = db.session.scalars(u3.followed_series_select().order_by(
             Post.timestamp.desc())).all()
-        f4 = db.session.scalars(u4.followed_posts_select().order_by(
+        f4 = db.session.scalars(u4.followed_series_select().order_by(
             Post.timestamp.desc())).all()
         assert f1 == [p2, p4, p1]
         assert f2 == [p2, p3]

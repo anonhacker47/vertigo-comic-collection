@@ -1,8 +1,8 @@
-"""Initial migration.
+"""series
 
-Revision ID: 24b265a07295
+Revision ID: 76b5a07a764f
 Revises: 
-Create Date: 2022-09-19 21:10:47.855652
+Create Date: 2022-10-28 20:54:09.675612
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '24b265a07295'
+revision = '76b5a07a764f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -34,9 +34,14 @@ def upgrade():
     sa.ForeignKeyConstraint(['followed_id'], ['users.id'], ),
     sa.ForeignKeyConstraint(['follower_id'], ['users.id'], )
     )
-    op.create_table('posts',
+    op.create_table('series',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=280), nullable=False),
+    sa.Column('publisher', sa.String(length=280), nullable=True),
+    sa.Column('writer', sa.String(length=280), nullable=True),
+    sa.Column('genre', sa.String(length=280), nullable=True),
+    sa.Column('format', sa.String(length=280), nullable=True),
+    sa.Column('books_count', sa.Integer(), nullable=True),
     sa.Column('slug', sa.String(length=280), nullable=True),
     sa.Column('thumbnail', sa.String(length=280), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=False),
@@ -44,8 +49,8 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_posts_timestamp'), 'posts', ['timestamp'], unique=False)
-    op.create_index(op.f('ix_posts_user_id'), 'posts', ['user_id'], unique=False)
+    op.create_index(op.f('ix_series_timestamp'), 'series', ['timestamp'], unique=False)
+    op.create_index(op.f('ix_series_user_id'), 'series', ['user_id'], unique=False)
     op.create_table('tokens',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('access_token', sa.String(length=64), nullable=False),
@@ -68,9 +73,9 @@ def downgrade():
     op.drop_index(op.f('ix_tokens_refresh_token'), table_name='tokens')
     op.drop_index(op.f('ix_tokens_access_token'), table_name='tokens')
     op.drop_table('tokens')
-    op.drop_index(op.f('ix_posts_user_id'), table_name='posts')
-    op.drop_index(op.f('ix_posts_timestamp'), table_name='posts')
-    op.drop_table('posts')
+    op.drop_index(op.f('ix_series_user_id'), table_name='series')
+    op.drop_index(op.f('ix_series_timestamp'), table_name='series')
+    op.drop_table('series')
     op.drop_table('followers')
     op.drop_index(op.f('ix_users_username'), table_name='users')
     op.drop_index(op.f('ix_users_email'), table_name='users')

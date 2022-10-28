@@ -21,7 +21,7 @@ class PaginationTests(BaseTestCase):
         db.session.commit()
 
     def test_pagination_default(self):
-        rv = self.client.get('/api/posts')
+        rv = self.client.get('/api/series')
         assert rv.status_code == 200
         assert rv.json['pagination']['total'] == 105
         assert rv.json['pagination']['offset'] == 0
@@ -32,7 +32,7 @@ class PaginationTests(BaseTestCase):
         assert rv.json['data'][24]['text'] == 'Post 25'
 
     def test_pagination_page(self):
-        rv = self.client.get('/api/posts?offset=30&limit=10')
+        rv = self.client.get('/api/series?offset=30&limit=10')
         assert rv.status_code == 200
         assert rv.json['pagination']['total'] == 105
         assert rv.json['pagination']['offset'] == 30
@@ -43,7 +43,7 @@ class PaginationTests(BaseTestCase):
         assert rv.json['data'][9]['text'] == 'Post 40'
 
     def test_pagination_last(self):
-        rv = self.client.get('/api/posts?offset=99')
+        rv = self.client.get('/api/series?offset=99')
         assert rv.status_code == 200
         assert rv.json['pagination']['total'] == 105
         assert rv.json['pagination']['offset'] == 99
@@ -54,17 +54,17 @@ class PaginationTests(BaseTestCase):
         assert rv.json['data'][5]['text'] == 'Post 105'
 
     def test_pagination_invalid(self):
-        rv = self.client.get('/api/posts?offset=-2')
+        rv = self.client.get('/api/series?offset=-2')
         assert rv.status_code == 400
-        rv = self.client.get('/api/posts?offset=110')
+        rv = self.client.get('/api/series?offset=110')
         assert rv.status_code == 400
-        rv = self.client.get('/api/posts?limit=0')
+        rv = self.client.get('/api/series?limit=0')
         assert rv.status_code == 400
-        rv = self.client.get('/api/posts?limit=-10')
+        rv = self.client.get('/api/series?limit=-10')
         assert rv.status_code == 400
 
     def test_pagination_custom_limit(self):
-        rv = self.client.get('/api/posts?offset=16&limit=5')
+        rv = self.client.get('/api/series?offset=16&limit=5')
         assert rv.status_code == 200
         assert rv.json['pagination']['total'] == 105
         assert rv.json['pagination']['offset'] == 16
@@ -75,7 +75,7 @@ class PaginationTests(BaseTestCase):
         assert rv.json['data'][4]['text'] == 'Post 21'
 
     def test_pagination_large_per_page(self):
-        rv = self.client.get('/api/posts?offset=37&limit=50')
+        rv = self.client.get('/api/series?offset=37&limit=50')
         assert rv.status_code == 200
         assert rv.json['pagination']['total'] == 105
         assert rv.json['pagination']['offset'] == 37
@@ -86,17 +86,17 @@ class PaginationTests(BaseTestCase):
         assert rv.json['data'][24]['text'] == 'Post 62'
 
     def test_pagination_offset_and_after(self):
-        rv = self.client.get('/api/posts?offset=37&after=2021-01-01T00:00:00')
+        rv = self.client.get('/api/series?offset=37&after=2021-01-01T00:00:00')
         assert rv.status_code == 400
         rv = self.client.get('/api/users/1/following?offset=37&after=foo')
         assert rv.status_code == 400
 
     def test_pagination_after_desc(self):
-        rv = self.client.get('/api/posts')
+        rv = self.client.get('/api/series')
         assert rv.status_code == 200
         tm = rv.json['data'][5]['timestamp']
 
-        rv = self.client.get(f'/api/posts?after={tm}')
+        rv = self.client.get(f'/api/series?after={tm}')
         assert rv.status_code == 200
         assert rv.json['pagination']['total'] == 105
         assert rv.json['pagination']['offset'] == 6

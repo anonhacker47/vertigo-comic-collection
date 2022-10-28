@@ -3,7 +3,7 @@ from marshmallow import validate, validates, validates_schema, \
     ValidationError, post_dump
 from api import ma, db
 from api.auth import token_auth
-from api.models import User, Post
+from api.models import User, Series
 
 paginated_schema_cache = {}
 
@@ -75,7 +75,7 @@ class UserSchema(ma.SQLAlchemySchema):
                          validate=validate.Length(min=3))
     avatar_url = ma.String(dump_only=True)
     first_seen = ma.auto_field(dump_only=True)
-    posts_url = ma.URLFor('posts.user_all', values={'id': '<id>'},
+    series_url = ma.URLFor('series.user_all', values={'id': '<id>'},
                           dump_only=True)
 
     @validates('username')
@@ -111,9 +111,9 @@ class UpdateUserSchema(UserSchema):
             raise ValidationError('Password is incorrect')
 
 
-class PostSchema(ma.SQLAlchemySchema):
+class SeriesSchema(ma.SQLAlchemySchema):
     class Meta:
-        model = Post
+        model = Series
         include_fk = True
         ordered = True
 
@@ -123,6 +123,18 @@ class PostSchema(ma.SQLAlchemySchema):
     
     title = ma.auto_field(required=True, validate=validate.Length(
         min=1, max=280))
+    
+    publisher = ma.auto_field(validate=validate.Length(
+        min=1, max=280)) 
+    writer = ma.auto_field(validate=validate.Length(
+        min=1, max=280))   
+    genre = ma.auto_field(validate=validate.Length(
+        min=1, max=280)) 
+    format = ma.auto_field(validate=validate.Length(
+        min=1, max=280))
+    books_count = ma.auto_field(validate=validate.Length(
+        min=1, max=280))  
+    
     slug = ma.String()
     thumbnail = ma.String()
     timestamp = ma.auto_field(dump_only=True)

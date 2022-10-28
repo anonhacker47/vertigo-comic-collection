@@ -5,65 +5,65 @@ from tests.base_test_case import BaseTestCase
 
 
 class PostTests(BaseTestCase):
-    def test_new_post(self):
-        rv = self.client.post('/api/posts', json={
-            'text': 'This is a test post',
+    def test_new_series(self):
+        rv = self.client.series('/api/series', json={
+            'text': 'This is a test series',
         })
         assert rv.status_code == 201
-        assert rv.json['text'] == 'This is a test post'
+        assert rv.json['text'] == 'This is a test series'
         assert rv.json['author']['username'] == 'test'
         id = rv.json['id']
 
-        rv = self.client.get(f'/api/posts/{id}')
+        rv = self.client.get(f'/api/series/{id}')
         assert rv.status_code == 200
-        assert rv.json['text'] == 'This is a test post'
+        assert rv.json['text'] == 'This is a test series'
 
-        rv = self.client.get('/api/posts')
-        assert rv.status_code == 200
-        assert rv.json['pagination']['total'] == 1
-        assert rv.json['data'][0]['text'] == 'This is a test post'
-
-        rv = self.client.get('/api/users/1/posts')
+        rv = self.client.get('/api/series')
         assert rv.status_code == 200
         assert rv.json['pagination']['total'] == 1
-        assert rv.json['data'][0]['text'] == 'This is a test post'
+        assert rv.json['data'][0]['text'] == 'This is a test series'
 
-        rv = self.client.get('/api/users/2/posts')
+        rv = self.client.get('/api/users/1/series')
+        assert rv.status_code == 200
+        assert rv.json['pagination']['total'] == 1
+        assert rv.json['data'][0]['text'] == 'This is a test series'
+
+        rv = self.client.get('/api/users/2/series')
         assert rv.status_code == 404
 
-    def test_edit_post(self):
-        rv = self.client.post('/api/posts', json={
-            'text': 'This is a test post',
+    def test_edit_series(self):
+        rv = self.client.series('/api/series', json={
+            'text': 'This is a test series',
         })
         assert rv.status_code == 201
-        assert rv.json['text'] == 'This is a test post'
+        assert rv.json['text'] == 'This is a test series'
         id = rv.json['id']
 
-        rv = self.client.put(f'/api/posts/{id}', json={
-            'text': 'This is a test post edited',
+        rv = self.client.put(f'/api/series/{id}', json={
+            'text': 'This is a test series edited',
         })
         assert rv.status_code == 200
-        assert rv.json['text'] == 'This is a test post edited'
+        assert rv.json['text'] == 'This is a test series edited'
 
-        rv = self.client.get(f'/api/posts/{id}')
+        rv = self.client.get(f'/api/series/{id}')
         assert rv.status_code == 200
-        assert rv.json['text'] == 'This is a test post edited'
+        assert rv.json['text'] == 'This is a test series edited'
 
-    def test_delete_post(self):
-        rv = self.client.post('/api/posts', json={
-            'text': 'This is a test post',
+    def test_delete_series(self):
+        rv = self.client.series('/api/series', json={
+            'text': 'This is a test series',
         })
         assert rv.status_code == 201
-        assert rv.json['text'] == 'This is a test post'
+        assert rv.json['text'] == 'This is a test series'
         id = rv.json['id']
 
-        rv = self.client.delete(f'/api/posts/{id}')
+        rv = self.client.delete(f'/api/series/{id}')
         assert rv.status_code == 204
 
-        rv = self.client.get(f'/api/posts/{id}')
+        rv = self.client.get(f'/api/series/{id}')
         assert rv.status_code == 404
 
-    def test_post_feed(self):
+    def test_series_feed(self):
         user1 = db.session.get(User, 1)
         user2 = User(username='susan', email='susan@example.com',
                      password='dog')
@@ -71,12 +71,12 @@ class PostTests(BaseTestCase):
         db.session.commit()
         user1.follow(user2)
         now = datetime.utcnow()
-        post1 = Post(text='Post 1', author=user2,
+        series1 = Post(text='Post 1', author=user2,
                      timestamp=now - timedelta(minutes=2))
-        post2 = Post(text='Post 2', author=user1,
+        series2 = Post(text='Post 2', author=user1,
                      timestamp=now - timedelta(minutes=1))
-        post3 = Post(text='Post 3', author=user2, timestamp=now)
-        db.session.add_all([post1, post2, post3])
+        series3 = Post(text='Post 3', author=user2, timestamp=now)
+        db.session.add_all([series1, series2, series3])
         db.session.commit()
 
         rv = self.client.get('/api/feed')
@@ -92,19 +92,19 @@ class PostTests(BaseTestCase):
     def test_permissions(self):
         user = User(username='susan', email='susan@example.com',
                     password='dog')
-        post = Post(text='This is a test post', author=user)
-        db.session.add_all([user, post])
+        series = Post(text='This is a test series', author=user)
+        db.session.add_all([user, series])
         db.session.commit()
-        id = post.id
+        id = series.id
 
-        rv = self.client.put(f'/api/posts/{id}', json={
-            'text': 'This is a test post edited',
+        rv = self.client.put(f'/api/series/{id}', json={
+            'text': 'This is a test series edited',
         })
         assert rv.status_code == 403
 
-        rv = self.client.delete(f'/api/posts/{id}')
+        rv = self.client.delete(f'/api/series/{id}')
         assert rv.status_code == 403
 
-        rv = self.client.get(f'/api/posts/{id}')
+        rv = self.client.get(f'/api/series/{id}')
         assert rv.status_code == 200
-        assert rv.json['text'] == 'This is a test post'
+        assert rv.json['text'] == 'This is a test series'
