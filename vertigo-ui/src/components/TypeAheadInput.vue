@@ -1,5 +1,5 @@
 <template>
-  <Combobox v-model="selected" nullable>
+  <Combobox v-model="selected">
     <div class="relative">
       <div class="relative w-full cursor-default rounded-lg bg-base-10">
         <ComboboxInput class="w-full input input-bordered" autoComplete="off" 
@@ -13,14 +13,14 @@
         <ComboboxOptions
           class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-base-100 py-1 shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
           style="z-index: 1;">
-          <ComboboxOption v-for="person in filteredPeople" as="template" :key="person.id" :value="person"
+          <ComboboxOption v-for="person in filteredPeople" as="template" :key="person.id" :value="person.value"
             v-slot="{ active }">
             <li class="relative cursor-default select-none py-3 pl-10 pr-4" :class="{
               'bg-base-300 text-white': active,
               'text-white': !active,
             }">
               <span class="block truncate" :class="{ 'font-medium': active, 'font-normal': !active }">
-                {{ person }}
+                {{ person.value }}
               </span>
               <!-- <span v-if="selected" class="absolute inset-y-0 left-0 flex items-center pl-3"
                 :class="{ 'text-white': active, 'text-teal-600': !active }">
@@ -60,7 +60,7 @@ import {
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
 import SeriesService from '../services/SeriesService';
 
-const people = ref([])
+const people = ref("")
 const props = defineProps({
   field: String,
   placeholder:String
@@ -96,7 +96,7 @@ let filteredPeople = computed(() =>
   query.value === ''
     ? people.value
     : people.value.filter((person) =>
-      person
+      person.value
         .toLowerCase()
         .replace(/\s+/g, '')
         .includes(query.value.toLowerCase().replace(/\s+/g, ''))

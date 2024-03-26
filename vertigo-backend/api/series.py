@@ -171,8 +171,7 @@ def get_series_by_field(field):
     # Remove duplicates (optional)
     values = list(set(values))
     values.sort() 
-    print(values)
-
+    values = [{'id':str(i+1),'value': value} for i, value in enumerate(values)]
     return jsonify(values)
 
 @series.route('/series/thumbnail/bg', methods=['GET'])

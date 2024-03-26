@@ -230,19 +230,34 @@ class Series(Updateable, db.Model):
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     title = sqla.Column(sqla.String(280), nullable=False)
+
     publisher = sqla.Column(sqla.String(280))
     genre = sqla.Column(sqla.String(280))
     main_char = sqla.Column(sqla.String(280))
     writer = sqla.Column(sqla.String(280))
     artist = sqla.Column(sqla.String(280))
+
+    inker = sqla.Column(sqla.String(280))
+    penciller = sqla.Column(sqla.String(280))
+    colorist = sqla.Column(sqla.String(280))
+    letterer = sqla.Column(sqla.String(280))
+
+    characters = sqla.Column(sqla.String(570))
+    teams = sqla.Column(sqla.String(570))
+
+    user_rating = sqla.Column(sqla.Float)
+
     editor = sqla.Column(sqla.String(280))
     summary = sqla.Column(sqla.String(570))
 
     issue = sqla_orm.relationship('Issue', back_populates='series',
                                   lazy='noload', cascade='all, delete-orphan')
+    
+    manga = sqla.Column(sqla.Integer)
+    release_date = sqla.Column(sqla.DateTime)
 
     series_format = sqla.Column(sqla.String(100))
-    books_count = sqla.Column(sqla.Integer)
+    issue_count = sqla.Column(sqla.Integer)
 
     read_count = sqla.Column(sqla.Integer)
     have_count = sqla.Column(sqla.Integer)
@@ -255,7 +270,6 @@ class Series(Updateable, db.Model):
     user_id = sqla.Column(sqla.Integer, sqla.ForeignKey(User.id), index=True)
 
     user = sqla_orm.relationship('User', back_populates='series')
-
 
     def issue_select(self):
         return Issue.select().where(sqla_orm.with_parent(self, Series.issue))
@@ -284,10 +298,16 @@ class Issue(Updateable, db.Model):
 
     id = sqla.Column(sqla.Integer, primary_key=True)
     title = sqla.Column(sqla.String(280), nullable=False)
+    number = sqla.Column(sqla.Integer)
+    summary = sqla.Column(sqla.String(570))
+
     slug = sqla.Column(sqla.String(280))
 
     read_whole = sqla.Column(sqla.Integer)
     have_whole = sqla.Column(sqla.Integer)
+
+    bought_date = sqla.Column(sqla.DateTime)
+    read_date = sqla.Column(sqla.DateTime)
 
     timestamp = sqla.Column(sqla.DateTime, index=True, default=datetime.utcnow,
                             nullable=False)

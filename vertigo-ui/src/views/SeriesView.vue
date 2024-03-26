@@ -102,7 +102,7 @@
                       </select>
                     </div>
                     <div class="form-control">
-                      <input type="number" v-model.number="updatedSeries.value.books_count" placeholder="Book Count"
+                      <input type="number" v-model.number="updatedSeries.value.issue_count" placeholder="Book Count"
                         class="input input-bordered" disabled />
                     </div>
                   </div>

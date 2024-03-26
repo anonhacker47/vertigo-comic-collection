@@ -128,7 +128,22 @@ class SeriesSchema(ma.SQLAlchemySchema):
     writer = ma.auto_field(validate=validate.Length(
         min=0, max=280))   
     artist = ma.auto_field(validate=validate.Length(
+        min=0, max=280))
+
+    inker = ma.auto_field(validate=validate.Length(
         min=0, max=280))   
+    penciller = ma.auto_field(validate=validate.Length(
+        min=0, max=280))   
+    colorist = ma.auto_field(validate=validate.Length(
+        min=0, max=280))   
+    letterer = ma.auto_field(validate=validate.Length(
+        min=0, max=280))
+
+    characters = ma.auto_field(validate=validate.Length(
+        min=0, max=570))
+    
+    teams = ma.auto_field(validate=validate.Length(
+        min=0, max=570))   
     
     editor = ma.auto_field(validate=validate.Length(
         min=0, max=280))  
@@ -139,13 +154,25 @@ class SeriesSchema(ma.SQLAlchemySchema):
     genre = ma.auto_field(validate=validate.Length(
         min=0, max=280)) 
     
+    characters = ma.auto_field(validate=validate.Length(
+        min=0, max=570))
+
+    teams = ma.auto_field(validate=validate.Length(
+        min=0, max=570))
+
+    user_rating = ma.auto_field()
+
     main_char = ma.auto_field(validate=validate.Length(
         min=0, max=280)) 
     
-    
+    manga = ma.Integer(validate=validate.OneOf([0, 1]))
+
+    release_date = ma.auto_field() 
+        
     series_format = ma.auto_field(validate=validate.Length(
         min=1, max=100))
-    books_count = ma.auto_field() 
+    
+    issue_count = ma.auto_field() 
     read_count = ma.auto_field() 
     have_count = ma.auto_field() 
     
@@ -156,7 +183,6 @@ class SeriesSchema(ma.SQLAlchemySchema):
     timestamp = ma.auto_field(dump_only=True)
     user = ma.Nested(UserSchema, dump_only=True)
 
-    
     @post_dump
     def fix_datetimes(self, data, **kwargs):
         data['timestamp'] += 'Z'
@@ -173,10 +199,15 @@ class IssueSchema(ma.SQLAlchemySchema):
         
     title = ma.auto_field(validate=validate.Length(
         min=1, max=280))
-
+    
+    number = ma.auto_field() 
+    
     read_whole = ma.auto_field() 
     have_whole = ma.auto_field() 
-        
+
+    bought_date = ma.auto_field() 
+    read_date = ma.auto_field()
+
     slug = ma.String()
 
     timestamp = ma.auto_field(dump_only=True)

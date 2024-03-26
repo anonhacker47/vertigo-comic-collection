@@ -38,7 +38,7 @@ def user_series_stats(user_id):
     completed_series_count = (
         db.session.query(Series)
         .filter_by(user_id=user_id)
-        .filter(Series.have_count == Series.books_count)
+        .filter(Series.have_count == Series.issue_count)
         .count()
     )
     return jsonify({'totalSeriesCount': series_count, 'collectedSeriesCount': completed_series_count})
@@ -69,7 +69,7 @@ def user_read_series(user_id):
     read_series_count = (
         db.session.query(Series)
         .filter_by(user_id=user_id)
-        .filter(Series.have_count == Series.books_count)
+        .filter(Series.have_count == Series.issue_count)
         .count()
     )
     return jsonify({'readSeriesCount': read_series_count})
