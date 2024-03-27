@@ -2,12 +2,12 @@
   <Combobox v-model="selected">
     <div class="relative">
       <div class="relative w-full cursor-default rounded-lg bg-base-10">
-        <ComboboxInput class="w-full input input-bordered" autoComplete="off" 
-          @change="query = $event.target.value" :placeholder="placeholder" />
-        <!-- <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
+        <ComboboxInput class="w-full input input-bordered" autoComplete="off" @change="query = $event.target.value"
+          :placeholder="placeholder" />
+        <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
           <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
-        </ComboboxButton> -->
-      </div>
+        </ComboboxButton>
+      </div>  
       <TransitionRoot leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0"
         @after-leave="query = ''">
         <ComboboxOptions
@@ -49,29 +49,29 @@
 </template>
 
 <script setup>
-import { ref, computed,onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import {
   Combobox,
   ComboboxInput,
   ComboboxOptions,
+  ComboboxButton,
   ComboboxOption,
   TransitionRoot,
 } from '@headlessui/vue'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
-import SeriesService from '../services/SeriesService';
+import SeriesService from 'src/services/SeriesService';
 
 const people = ref("")
 const props = defineProps({
   field: String,
-  placeholder:String
+  placeholder: String
 })
 
-let selected = ref(people.value[0])
+let selected = ref()
 
 onMounted(() => {
   getSeriesFields();
 });
-
 
 async function getSeriesFields() {
   try {
